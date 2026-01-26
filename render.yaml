@@ -1,0 +1,15 @@
+# Render.com Deployment Configuration
+# This file tells Render how to build and run your app
+
+# Build command
+build:
+  - npm install
+
+# Start command  
+start:
+  - npm start
+
+# Environment
+env:
+  - key: NODE_ENV
+    value: production

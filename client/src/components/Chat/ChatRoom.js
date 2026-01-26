@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import './ChatRoom.css';
 
-const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_URL || window.location.origin.replace(':3000', ':5000');
 
 function ChatRoom({ user, onLogout }) {
   const { roomName } = useParams();
