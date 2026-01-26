@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './RoomList.css';
 
 function RoomList({ user, onLogout }) {
@@ -18,7 +19,7 @@ function RoomList({ user, onLogout }) {
   const fetchRooms = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/rooms', {
+      const response = await axios.get(`${API_BASE_URL}/api/rooms`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRooms(response.data.rooms);
@@ -33,7 +34,7 @@ function RoomList({ user, onLogout }) {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('/api/rooms', newRoomData, {
+      await axios.post(`${API_BASE_URL}/api/rooms`, newRoomData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setShowCreateModal(false);

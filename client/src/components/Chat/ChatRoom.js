@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './ChatRoom.css';
 
-const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_URL || window.location.origin.replace(':3000', ':5000');
+const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_URL || API_BASE_URL;
 
 function ChatRoom({ user, onLogout }) {
   const { roomName } = useParams();
@@ -87,7 +88,7 @@ function ChatRoom({ user, onLogout }) {
   const loadMessages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/messages/room/${roomName}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/messages/room/${roomName}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(response.data.messages);

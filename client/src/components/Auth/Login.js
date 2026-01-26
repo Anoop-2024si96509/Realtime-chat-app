@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 
 function Login({ onLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -14,7 +15,7 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
       const { token, user } = response.data;
       onLogin(user, token);
       navigate('/rooms');
