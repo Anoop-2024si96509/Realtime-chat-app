@@ -13,8 +13,8 @@
     "client": "cd client && npm start",
     "install-all": "npm install && cd client && npm install",
     "dev-all": "concurrently \"npm run dev\" \"npm run client\"",
-    "build": "echo 'Backend ready'",
-    "heroku-postbuild": "echo 'Backend ready'"
+    "build": "node -e \"console.log('Build complete')\"",
+    "heroku-postbuild": "node -e \"console.log('Build complete')\""
   },
   "keywords": ["chat", "realtime", "socket.io", "MERN", "websocket"],
   "author": "",
