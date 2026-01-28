@@ -1,0 +1,153 @@
+name: CI - Tests and Lint
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install backend dependencies
+        run: npm ci
+      
+      - name: Run backend linting
+        run: npm run lint:backend
+        continue-on-error: true
+      
+      - name: Run backend tests
+        run: npm run test:backend
+      
+      - name: Upload backend coverage
+        uses: codecov/codecov-action@v3
+        if: matrix.node-version == '20.x'
+        with:
+          files: ./coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+      
+      - name: Install frontend dependencies
+        run: |
+          cd client
+          npm ci
+      
+      - name: Run frontend linting
+        run: |
+          cd client
+          npm run lint
+        continue-on-error: true
+      
+      - name: Run frontend tests
+        run: |
+          cd client
+          npm test -- --watchAll=false --coverage
+      
+      - name: Upload frontend coverage
+        uses: codecov/codecov-action@v3
+        if: matrix.node-version == '20.x'
+        with:
+          files: ./client/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install all dependencies
+        run: npm run install-all
+      
+      - name: Build frontend
+        run: |
+          cd client
+          npm run build
+      
+      - name: Check build artifacts
+        run: |
+          if [ -d "client/build" ]; then
+            echo "? Build successful - client/build directory created"
+            ls -la client/build
+          else
+            echo "? Build failed - client/build directory not found"
+            exit 1
+          fi
+
+  lint-summary:
+    name: Lint Summary
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install backend dependencies
+        run: npm ci
+      
+      - name: Install frontend dependencies
+        run: |
+          cd client
+          npm ci
+      
+      - name: Run all linting
+        run: |
+          echo "?? Running Backend Linting..."
+          npm run lint:backend || echo "?? Backend linting found issues"
+          
+          echo ""
+          echo "?? Running Frontend Linting..."
+          cd client
+          npm run lint || echo "?? Frontend linting found issues"
+        continue-on-error: true

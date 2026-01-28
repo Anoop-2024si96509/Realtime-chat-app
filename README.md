@@ -5,6 +5,7 @@ A full-stack real-time chat application built with the MERN stack (MongoDB, Expr
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)
 ![React](https://img.shields.io/badge/react-18.2.0-blue.svg)
+![CI Status](https://github.com/Anoop-2024si96509/Realtime-chat-app/workflows/CI%20-%20Tests%20and%20Lint/badge.svg)
 
 ## 🏗️ Architecture
 
@@ -382,6 +383,47 @@ See [TESTING.md](./TESTING.md) for complete test documentation including:
 - Expected results and assertions
 - Code coverage reports
 - Instructions for adding new tests
+
+---
+
+## 🔄 CI/CD Pipeline
+
+This project uses **GitHub Actions** for continuous integration and deployment.
+
+### Automated Checks
+The CI pipeline runs automatically on every push and pull request:
+
+✅ **Backend Tests** - Jest + Supertest unit tests  
+✅ **Frontend Tests** - React Testing Library component tests  
+✅ **Build Verification** - Ensures React app builds successfully  
+✅ **Code Linting** - ESLint checks for code quality  
+✅ **Multi-Version Testing** - Tests on Node.js 18.x and 20.x
+
+### Workflow Status
+![CI Status](https://github.com/Anoop-2024si96509/Realtime-chat-app/workflows/CI%20-%20Tests%20and%20Lint/badge.svg)
+
+### Run Linting Locally
+
+```bash
+# Backend linting
+npm run lint:backend
+
+# Frontend linting
+cd client && npm run lint
+
+# Auto-fix linting issues
+npm run lint:fix
+cd client && npm run lint:fix
+```
+
+### CI/CD Documentation
+See [CI_CD_DOCUMENTATION.md](./CI_CD_DOCUMENTATION.md) for:
+- Complete workflow configuration
+- Job details and dependencies
+- Troubleshooting guide
+- Best practices
+
+---
 
 ## 📝 Contributing
 
