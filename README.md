@@ -354,14 +354,34 @@ Consider using [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for cloud-ho
 
 ## 🧪 Testing
 
+This project includes comprehensive test coverage for both backend and frontend.
+
+### Test Summary
+- ✅ **6 tests passing**
+- ✅ **Backend:** 4 tests (Authentication API)
+- ✅ **Frontend:** 2 tests (Login Component)
+- ✅ **Code Coverage:** 51.61% overall, 74% for auth routes
+
+### Run Tests
+
 ```bash
-# Run backend tests (if implemented)
-npm test
+# Run backend tests
+npm run test:backend
 
 # Run frontend tests
 cd client
-npm test
+npm test -- --watchAll=false
+
+# Run all tests
+npm run test:all
 ```
+
+### Test Details
+See [TESTING.md](./TESTING.md) for complete test documentation including:
+- Detailed test case descriptions
+- Expected results and assertions
+- Code coverage reports
+- Instructions for adding new tests
 
 ## 📝 Contributing
 
