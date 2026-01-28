@@ -1,5 +1,5 @@
 {
-  "name": "realtime-chat-app",
+  "name": "@anoop-2024si96509/realtime-chat-app",
   "version": "0.1.0",
   "description": "A real-time chat application built with MERN stack and Socket.io",
   "main": "server/server.js",
