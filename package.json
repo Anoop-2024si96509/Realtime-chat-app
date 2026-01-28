@@ -25,6 +25,14 @@
     "lint:backend": "eslint server/**/*.js --fix",
     "lint:fix": "eslint . --fix"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anoop-2024si96509/Realtime-chat-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Anoop-2024si96509/Realtime-chat-app/issues"
+  },
+  "homepage": "https://github.com/Anoop-2024si96509/Realtime-chat-app#readme",
   "keywords": [
     "chat",
     "realtime",

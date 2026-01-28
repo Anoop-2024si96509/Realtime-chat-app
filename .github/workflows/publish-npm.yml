@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish to npm and GitHub Packages
 
 on:
   release:
@@ -12,6 +12,7 @@ on:
 
 jobs:
   publish-npm:
+    name: Publish to npm
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,12 +22,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: Setup Node.js for npm
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-          scope: '@anoop-2024si96509'
       
       - name: Install dependencies
         run: npm ci
@@ -59,14 +59,83 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
-      - name: Notify success
+      - name: Notify npm success
         if: success()
         run: |
-          echo "? Package published successfully!"
+          echo "? Package published successfully to npm!"
           echo "?? View at: https://www.npmjs.com/package/@anoop-2024si96509/realtime-chat-app"
       
       - name: Notify failure
         if: failure()
         run: |
-          echo "? Publishing failed. Check the logs above."
+          echo "? npm publishing failed. Check the logs above."
           echo "Make sure NPM_TOKEN secret is configured correctly."
+
+  publish-github-packages:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@anoop-2024si96509'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm ci
+      
+      - name: Run tests
+        run: npm run test:backend
+      
+      - name: Build client
+        run: npm run build:client
+      
+      - name: Verify build
+        run: |
+          if [ ! -d "client/build" ]; then
+            echo "? Build failed - client/build directory not found"
+            exit 1
+          fi
+          echo "? Build successful"
+      
+      - name: Update package name for GitHub Packages
+        run: |
+          # GitHub Packages requires the package name to match the repo owner
+          node -e "
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.name = '@anoop-2024si96509/realtime-chat-app';
+          pkg.publishConfig = {
+            registry: 'https://npm.pkg.github.com'
+          };
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+      
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Notify GitHub Packages success
+        if: success()
+        run: |
+          echo "? Package published successfully to GitHub Packages!"
+          echo "?? View at: https://github.com/Anoop-2024si96509/Realtime-chat-app/packages"
+      
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "? GitHub Packages publishing failed. Check the logs above."
