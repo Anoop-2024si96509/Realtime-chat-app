@@ -13,7 +13,7 @@
     "client": "cd client && npm start",
     "install-all": "npm install && cd client && npm install",
     "dev-all": "concurrently \"npm run dev\" \"npm run client\"",
-    "build": "node -e \"console.log('Build complete')\"",
+    "build": "cd client && npm run build",
     "heroku-postbuild": "node -e \"console.log('Build complete')\"",
     "test": "jest --coverage --testPathIgnorePatterns=client",
     "test:watch": "jest --watch --testPathIgnorePatterns=client",
