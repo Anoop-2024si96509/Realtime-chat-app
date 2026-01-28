@@ -8,7 +8,6 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/messages');
 const roomRoutes = require('./routes/rooms');
-const { authenticateSocket } = require('./middleware/auth');
 
 const app = express();
 const server = http.createServer(app);
