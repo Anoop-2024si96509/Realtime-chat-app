@@ -75,6 +75,19 @@ describe('Authentication API Tests', () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe('User already exists');
     });
+
+    it('should return 400 if required fields are missing', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          username: 'testuser'
+          // Missing email and password
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('errors');
+      expect(Array.isArray(response.body.errors)).toBe(true);
+    });
   });
 
   // Test Case 2: User Login
@@ -125,6 +138,29 @@ describe('Authentication API Tests', () => {
 
       expect(response.status).toBe(401);
       expect(response.body.message).toBe('Invalid credentials');
+    });
+
+    it('should return 401 when password is incorrect', async () => {
+      // Mock user with comparePassword returning false
+      const mockUser = {
+        _id: '123456789',
+        username: 'testuser',
+        email: 'test@example.com',
+        comparePassword: jest.fn().mockResolvedValue(false)
+      };
+
+      User.findOne = jest.fn().mockResolvedValue(mockUser);
+
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'wrongpassword'
+        });
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Invalid credentials');
+      expect(mockUser.comparePassword).toHaveBeenCalledWith('wrongpassword');
     });
   });
 });
